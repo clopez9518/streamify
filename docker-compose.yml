@@ -4,15 +4,15 @@ services:
     container_name: streamify-postgres
     restart: always
     environment:
-      POSTGRES_USER: streamify_user
-      POSTGRES_PASSWORD: streamify_password_123!
-      POSTGRES_DB: streamify_db
+      POSTGRES_USER: ${POSTGRES_USER:-streamify_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-streamify_password_123!}
+      POSTGRES_DB: ${POSTGRES_DB:-streamify_db}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U streamify_user -d streamify_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-streamify_user} -d ${POSTGRES_DB:-streamify_db}"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -30,10 +30,11 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=streamify_db;Username=streamify_user;Password=streamify_password_123!"
-      Jwt__Key: "SuperSecretKeyForStreamifyJwtTokenProductionEvaluation2026!"
-      Jwt__Issuer: "streamify.api"
-      Jwt__Audience: "streamify.client"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-streamify_db};Username=${POSTGRES_USER:-streamify_user};Password=${POSTGRES_PASSWORD:-streamify_password_123!}"
+      Jwt__Key: "${JWT_SECRET:-SuperSecretKeyForStreamifyJwtTokenProductionEvaluation2026!}"
+      Jwt__Issuer: "${JWT_ISSUER:-streamify.api}"
+      Jwt__Audience: "${JWT_AUDIENCE:-streamify.client}"
+      CorsSettings__FrontendUrl: "${CORS_FRONTEND_URL:-http://localhost,http://localhost:80}"
       TMDb__ApiKey: "${TMDB_API_KEY:-}"
       TMDb__BaseUrl: "https://api.themoviedb.org/3/"
     ports:
