@@ -1,0 +1,56 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: streamify-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: streamify_user
+      POSTGRES_PASSWORD: streamify_password_123!
+      POSTGRES_DB: streamify_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U streamify_user -d streamify_db"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+      start_interval: 2s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: streamify-backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=streamify_db;Username=streamify_user;Password=streamify_password_123!"
+      Jwt__Key: "SuperSecretKeyForStreamifyJwtTokenProductionEvaluation2026!"
+      Jwt__Issuer: "streamify.api"
+      Jwt__Audience: "streamify.client"
+      TMDb__ApiKey: "${TMDB_API_KEY:-}"
+      TMDb__BaseUrl: "https://api.themoviedb.org/3/"
+    ports:
+      - "5000:5000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api
+    container_name: streamify-frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  postgres_data:

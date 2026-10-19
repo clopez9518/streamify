@@ -1,0 +1,76 @@
+# ==============================================================================
+# Streamify Root .gitignore
+# ==============================================================================
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+.vs/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+*.pfx
+*.pem
+*.key
+*.cer
+
+# Backend (.NET)
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+*.userprefs
+*.pidb
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+*.VisualState.xml
+TestResult.xml
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+publish/
+**/publish/
+**/Generated\ Files/
+*.nupkg
+*.snupkg
+*.dbmdl
+healthchecksdb
+appsettings.Development.json
+**/appsettings.Development.json
+**/Properties/launchSettings.json
+
+# Frontend (Node / React / Vite)
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+dist-ssr/
+**/dist-ssr/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Database & local data
+*.mdf
+*.ldf
+*.ndf
+postgres_data/
+**/postgres_data/
