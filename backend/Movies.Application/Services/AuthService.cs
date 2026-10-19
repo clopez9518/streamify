@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Movies.Application.Common;
 using Movies.Application.DTOs.Auth;
 using Movies.Application.DTOs.User;
@@ -41,7 +41,6 @@ namespace Movies.Application.Services
             var accessToken = _jwtService.GenerateJwt(user);
             var refreshToken = _jwtService.GenerateRefreshToken();
 
-            //TODO: Hashear el token antes de guardarlo
             var tokenHash = TokenHasher.HashToken(refreshToken.Token);
 
             user.RefreshTokens.Add(new RefreshToken

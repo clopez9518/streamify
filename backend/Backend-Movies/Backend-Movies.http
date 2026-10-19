@@ -1,6 +1,46 @@
-@Backend_Movies_HostAddress = http://localhost:5286
+@Backend_Movies_HostAddress = http://localhost:5000
 
-GET {{Backend_Movies_HostAddress}}/weatherforecast/
+### 1. Health Checks
+GET {{Backend_Movies_HostAddress}}/health
 Accept: application/json
 
-###
+### 2. Database Health Check
+GET {{Backend_Movies_HostAddress}}/health/db
+Accept: application/json
+
+### 3. Get Hero Movie
+GET {{Backend_Movies_HostAddress}}/api/movies/hero
+Accept: application/json
+
+### 4. Get Movies Catalog (Paginated)
+GET {{Backend_Movies_HostAddress}}/api/movies?page=1&pageSize=10
+Accept: application/json
+
+### 5. Search Movies
+GET {{Backend_Movies_HostAddress}}/api/movies/search?query=Batman
+Accept: application/json
+
+### 6. Get All Genres
+GET {{Backend_Movies_HostAddress}}/api/genres
+Accept: application/json
+
+### 7. Auth Login (Admin Demo)
+POST {{Backend_Movies_HostAddress}}/api/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "admin@movies.com",
+  "password": "Admin1234!"
+}
+
+### 8. Auth Register
+POST {{Backend_Movies_HostAddress}}/api/auth/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "user@example.com",
+  "password": "Password123!",
+  "confirmPassword": "Password123!"
+}
