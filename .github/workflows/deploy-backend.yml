@@ -35,18 +35,11 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Set ECR repository name
-        run: |
-          REPO_NAME="${{ vars.ECR_REPOSITORY || 'streamify/backend' }}"
-          # Remove leading slash if present (ECR names cannot start with /)
-          REPO_NAME="${REPO_NAME#/}"
-          echo "ECR_REPO=${REPO_NAME}" >> $GITHUB_ENV
-
       - name: Extract metadata (tags, labels)
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO }}
+          images: ${{ steps.login-ecr.outputs.registry }}/${{ vars.ECR_REPOSITORY || 'streamify-backend' }}
           tags: |
             type=sha,format=short
             type=raw,value=latest,enable={{is_default_branch}}
