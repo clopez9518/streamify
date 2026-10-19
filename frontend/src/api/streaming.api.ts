@@ -20,7 +20,7 @@ const processQueue = (error: unknown, token: string | null = null) => {
 };
 
 export const streamingApi = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
+    baseURL: import.meta.env.VITE_API_URL || "/api",
     withCredentials: true,
 });
 
