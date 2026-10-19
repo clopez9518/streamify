@@ -1,6 +1,6 @@
-# Movies API
+# 🎬 Streamify - Backend API (.NET 10)
 
-API RESTful para una plataforma de streaming de películas, construida con arquitectura limpia y las mejores prácticas de .NET.
+API RESTful para la plataforma de streaming Streamify, construida con Clean Architecture y .NET 10.
 
 ## Tabla de Contenidos
 
@@ -13,7 +13,7 @@ API RESTful para una plataforma de streaming de películas, construida con arqui
 
 ## Descripción
 
-Backend completo para una plataforma de streaming de películas con sistema de perfiles de usuario, gestión de listas personales, autenticación JWT con refresh tokens, y panel de administración.
+Backend completo para la plataforma de streaming Streamify con sistema de perfiles de usuario, gestión de listas personales ("Mi Lista"), autenticación JWT con refresh tokens en cookies HttpOnly, integración con TMDb API y panel de administración.
 
 ## Tecnologías
 
@@ -21,71 +21,66 @@ Backend completo para una plataforma de streaming de películas con sistema de p
 |------|------------|
 | Runtime | .NET 10 |
 | Framework | ASP.NET Core |
-| Base de datos | PostgreSQL |
-| ORM | Entity Framework Core |
+| Base de datos | PostgreSQL 16+ |
+| ORM | Entity Framework Core 10 |
 | Validación | FluentValidation |
 | Mapeo | AutoMapper |
-| Autenticación | JWT + Refresh Tokens |
-| Testing | xUnit + Moq |
+| Autenticación | JWT + Refresh Tokens (HttpOnly Cookie) |
+| Testing | xUnit + Moq (100% pasando) |
 
 ## Arquitectura
 
 ```
-Backend-Movies/
-├── Backend-Movies/          # Capa Presentation (API)
-│   ├── Controllers/
-│   ├── Filters/
-│   └── Extensions/
-├── Movies.Application/      # Capa Application (Lógica de negocio)
-│   ├── Services/
-│   ├── DTOs/
-│   ├── Validators/
-│   └── Interfaces/
-├── Movies.Infrastructure/    # Capa Infrastructure (Persistencia)
-│   ├── Repositories/
-│   ├── Services/
-│   ├── Persistence/
-│   ├── Middleware/
-│   └── External/TMDb/
-├── Movies.Domain/            # Capa Domain (Entidades)
-│   ├── Entities/
-│   └── Enums/
-└── Backend-Movies.Test/     # Proyecto de pruebas
+backend/
+├── Backend-Movies/          # Capa Presentation (Controllers, Filters, Endpoints)
+├── Movies.Application/      # Capa Application (Casos de uso, DTOs, Mappers)
+├── Movies.Infrastructure/   # Capa Infrastructure (EF Core, Repositorios, TMDb Client)
+├── Movies.Domain/           # Capa Domain (Entidades, Enums, Interfaces)
+└── Backend-Movies.Test/     # Capa Testing (Pruebas unitarias)
 ```
 
-**Patrón de Arquitectura:** Clean Architecture con separación en capas independientes.
+**Patrón de Arquitectura:** Clean Architecture con separación de responsabilidades y DI desacoplada.
 
 ## Instalación y Ejecución
 
 ### Requisitos
 
 - .NET 10 SDK
-- PostgreSQL
+- PostgreSQL 16 o superior
 
 ### Pasos
 
-1. **Clonar el repositorio**
+1. **Clonar el repositorio monorepo**
    ```bash
-   git clone https://github.com/clopez9518/dotnet-backend-movies.git
-   cd backend-movies
+   git clone https://github.com/<tu-usuario>/streamify.git
+   cd streamify/backend
    ```
 
-2. **Configurar variables de entorno**
+2. **Configurar archivo de configuración**
 
-   Crear archivo `appsettings.Development.json`:
+   Copia la plantilla [`Backend-Movies/appsettings.Example.json`](file:///c:/workspace/.NET/streamify/backend/Backend-Movies/appsettings.Example.json) a `Backend-Movies/appsettings.Development.json`:
+   ```bash
+   cp Backend-Movies/appsettings.Example.json Backend-Movies/appsettings.Development.json
+   ```
+
+   Estructura de configuración:
    ```json
    {
      "ConnectionStrings": {
-       "DefaultConnection": "Host=localhost;Database=movies;Username=postgres;Password=tu_password"
+       "DefaultConnection": "Host=localhost;Port=5432;Database=moviesdb;Username=postgres;Password=tu_password"
      },
      "Jwt": {
-       "Secret": "tu_secret_seguro",
-       "Issuer": "MoviesApi",
-       "Audience": "MoviesApi",
-       "ExpirationMinutes": 60
+       "Key": "tu_clave_secreta_jwt_de_al_menos_32_caracteres_de_longitud",
+       "Issuer": "Movies.Api",
+       "Audience": "Movies.Api",
+       "RefreshTokenDays": 7
      },
-     "Tmdb": {
-       "ApiKey": "tu_api_key_de_tmdb"
+     "TMDb": {
+       "ApiKey": "tu_api_key_de_tmdb",
+       "BaseUrl": "https://api.themoviedb.org/3/"
+     },
+     "CorsSettings": {
+       "FrontendUrl": "http://localhost:5173"
      }
    }
    ```

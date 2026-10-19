@@ -1,4 +1,4 @@
-# 🎬 Streaming Platform
+# 🎬 Streamify - Frontend (React 19 + Vite)
 
 Una plataforma de streaming moderna, rápida y dinámica construida con React 19, TypeScript y Vite. Diseñada con una arquitectura modular, que incluye gestión de perfiles de usuario, listas de reproducción ("Mi Lista"), previsualizaciones interactivas de contenido y un panel de administración.
 
@@ -58,10 +58,10 @@ Para ejecutar este proyecto localmente, asegúrate de tener instalado:
 
 ## 📦 Instalación y Ejecución Local
 
-1. Clona este repositorio:
+1. Clona el repositorio monorepo:
    ```bash
-   git clone https://github.com/clopez9518/react-frontend-movies.git
-   cd streaming-platform
+   git clone https://github.com/<tu-usuario>/streamify.git
+   cd streamify/frontend
    ```
 
 2. Instala las dependencias del proyecto:
