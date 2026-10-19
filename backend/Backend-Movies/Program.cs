@@ -11,20 +11,37 @@ using Movies.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Config cors
-var frontendUrl = builder.Configuration["CorsSettings:FrontendUrl"];
+// Config cors: supports local dev, configured production URLs, and Vercel domains (*.vercel.app)
+var configuredOrigins = builder.Configuration["CorsSettings:FrontendUrl"]?
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+    ?? [];
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        if (!string.IsNullOrEmpty(frontendUrl))
+        policy.SetIsOriginAllowed(origin =>
         {
-            policy.WithOrigins(frontendUrl)
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials();
-        }
+            if (string.IsNullOrWhiteSpace(origin)) return false;
+
+            // Allow localhost for local development
+            if (origin.StartsWith("http://localhost:") || origin.StartsWith("https://localhost:"))
+                return true;
+
+            // Allow explicitly configured origins
+            if (configuredOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase))
+                return true;
+
+            // Allow Vercel deployments (*.vercel.app)
+            if (Uri.TryCreate(origin, UriKind.Absolute, out var uri) &&
+                uri.Host.EndsWith("vercel.app", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            return false;
+        })
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
     });
 });
 
@@ -86,6 +103,24 @@ if (!app.Environment.IsProduction())
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Lightweight health check endpoint for AWS ECS / ALB Target Group (does not keep DB awake)
+app.MapGet("/health", () => Results.Ok(new
+{
+    status = "Healthy",
+    service = "Streamify.Api",
+    environment = app.Environment.EnvironmentName,
+    timestamp = DateTime.UtcNow
+}));
+
+// Optional database connectivity check for manual diagnostics
+app.MapGet("/health/db", async (AppDBContext dbContext) =>
+{
+    var canConnect = await dbContext.Database.CanConnectAsync();
+    return canConnect
+        ? Results.Ok(new { status = "Healthy", database = "Connected", timestamp = DateTime.UtcNow })
+        : Results.Problem("Database unavailable", statusCode: 503);
+});
 
 app.MapControllers();
 
