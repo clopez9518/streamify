@@ -30,6 +30,7 @@ export const EditMovieForm = ({ movie, genres }: MovieFormProps) => {
                 releaseYear: data.releaseYear,
                 rating: data.rating,
                 isTrending: data.isTrending,
+                isHero: data.isHero,
                 isActive: data.isActive,
                 cast: data.cast,
                 crew: data.crew,

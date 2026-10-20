@@ -36,6 +36,7 @@ export const CreateMovieForm = ({ movie, genres }: MovieFormProps) => {
                 rating: data.rating,
                 genres: data.genres,
                 isTrending: data.isTrending,
+                isHero: data.isHero ?? false,
                 cast: data.cast,
                 crew: data.crew
             }

@@ -6,15 +6,16 @@ export interface Movie {
     description: string;
     durationMinutes: number;
     thumbnailUrl: string;
-    backdropUrl: string
+    backdropUrl: string;
     videoUrl: string;
     releaseYear: number;
     rating: number;
     genres: Genre[];
     isTrending: boolean;
+    isHero: boolean;
     cast: string[];
     crew: string[];
-    isInMyList: boolean
+    isInMyList: boolean;
 }
 
 export interface MovieAdmin {
@@ -23,7 +24,7 @@ export interface MovieAdmin {
     description: string;
     durationMinutes: number;
     thumbnailUrl: string;
-    backdropUrl: string
+    backdropUrl: string;
     videoUrl: string;
     releaseYear: number;
     rating: number;
@@ -33,6 +34,7 @@ export interface MovieAdmin {
     updatedAt: Date | null;
     genres: Genre[];
     isTrending: boolean;
+    isHero: boolean;
     cast: string[];
     crew: string[];
 }

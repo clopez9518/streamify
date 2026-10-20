@@ -17,6 +17,7 @@ export type MovieFormValues = {
     rating: number
     genres: Genre[]
     isTrending: boolean
+    isHero?: boolean
     isActive?: boolean
     cast: string[]
     crew: string[]
@@ -63,6 +64,7 @@ export const MovieForm = ({
             rating: movie?.rating || 0,
             genres: movie?.genres || [],
             isTrending: movie?.isTrending || false,
+            isHero: movie?.isHero || false,
             isActive: movie?.isActive ?? true,
             cast: movie?.cast || [],
             crew: movie?.crew || [],
@@ -292,13 +294,23 @@ export const MovieForm = ({
                             </div>
                         </div>
 
-                        <div className="grid gap-3 md:grid-cols-2">
+                        <div className="grid gap-3 md:grid-cols-3">
                             <label className={toggleClass}>
                                 <input type="checkbox" className="sr-only" {...register("isTrending")} />
                                 <span className="flex h-5 w-5 items-center justify-center rounded border border-white/20 bg-white/10">
                                     {formValues.isTrending && <Check className="h-3.5 w-3.5" />}
                                 </span>
                                 <span>Mark as trending</span>
+                            </label>
+
+                            <label className={toggleClass}>
+                                <input type="checkbox" className="sr-only" {...register("isHero")} />
+                                <span className="flex h-5 w-5 items-center justify-center rounded border border-white/20 bg-white/10">
+                                    {formValues.isHero && <Check className="h-3.5 w-3.5 text-amber-400" />}
+                                </span>
+                                <span className="flex items-center gap-1 text-amber-300">
+                                    ⭐ Destacar como Hero
+                                </span>
                             </label>
 
                             {mode === "edit" && (

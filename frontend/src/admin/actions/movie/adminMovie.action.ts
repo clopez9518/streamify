@@ -43,6 +43,16 @@ export const putAdminMovieGenresAction = async (id: string, genreIds: number[]) 
     }
 }
 
+export const putAdminSetHeroMovieAction = async (id: number | string) => {
+    try {
+        const { data } = await streamingApi.put<MovieAdmin>(`/admin/movies/${id}/hero`);
+        return data;
+    } catch (error) {
+        console.error("Error setting hero movie:", error);
+        throw error;
+    }
+}
+
 export const postAdminMovieAction = async (movie: CreateMovieDto) => {
     try {
         const { data } = await streamingApi.post<MovieAdmin>(`/admin/movies`, movie);

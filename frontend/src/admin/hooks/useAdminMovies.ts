@@ -4,7 +4,8 @@ import {
     getAdminMoviesAction,
     patchAdminMovieAction,
     postAdminMovieAction,
-    putAdminMovieGenresAction
+    putAdminMovieGenresAction,
+    putAdminSetHeroMovieAction
 } from "../actions/movie/adminMovie.action";
 import type { CreateMovieDto, UpdateMovieDto } from "@/interfaces/dto/movie.dto";
 import { getTmdbMovieByIdAction, getTmdbMoviesAction } from "../actions/tmdb/tmdb.action";
@@ -40,10 +41,33 @@ export const usePatchMovieAdmin = () => {
             notify.success("Movie updated successfully");
             queryClient.invalidateQueries({ queryKey: ["admin-movies"] });
             queryClient.invalidateQueries({ queryKey: ["movies"] });
+            queryClient.invalidateQueries({ queryKey: ["hero-movie"] });
+            queryClient.invalidateQueries({ queryKey: ["home"] });
             queryClient.setQueryData(["admin-movie", updatedMovie.id.toString()], updatedMovie);
         },
         onError: () => {
             notify.error('Error updating movie');
+        }
+    });
+};
+
+export const useSetHeroMovieAdmin = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: number | string) => putAdminSetHeroMovieAction(id),
+        retry: 1,
+
+        onSuccess: (updatedMovie) => {
+            notify.success(`"${updatedMovie.title}" fijada como Hero en Home`);
+            queryClient.invalidateQueries({ queryKey: ["admin-movies"] });
+            queryClient.invalidateQueries({ queryKey: ["movies"] });
+            queryClient.invalidateQueries({ queryKey: ["hero-movie"] });
+            queryClient.invalidateQueries({ queryKey: ["home"] });
+            queryClient.setQueryData(["admin-movie", updatedMovie.id.toString()], updatedMovie);
+        },
+        onError: () => {
+            notify.error('Error al fijar la película como Hero');
         }
     });
 };
@@ -76,6 +100,8 @@ export const usePostMovieAdmin = () => {
             notify.success("Movie created successfully");
             queryClient.invalidateQueries({ queryKey: ["admin-movies"] });
             queryClient.invalidateQueries({ queryKey: ["movies"] });
+            queryClient.invalidateQueries({ queryKey: ["hero-movie"] });
+            queryClient.invalidateQueries({ queryKey: ["home"] });
             queryClient.setQueryData(["admin-movie", createdMovie.id.toString()], createdMovie);
         },
         onError: () => {
@@ -105,8 +131,8 @@ export const useTmdbMovieById = (id: number) => {
 export const getMoviesAdmin = useMoviesAdmin;
 export const getMovieByIdAdmin = useMovieByIdAdmin;
 export const patchMovieAdmin = usePatchMovieAdmin;
+export const setHeroMovieAdmin = useSetHeroMovieAdmin;
 export const putMovieGenresAdmin = usePutMovieGenresAdmin;
 export const postMovieAdmin = usePostMovieAdmin;
 export const getTmdbMovies = useTmdbMovies;
 export const getTmdbMovieById = useTmdbMovieById;
-
