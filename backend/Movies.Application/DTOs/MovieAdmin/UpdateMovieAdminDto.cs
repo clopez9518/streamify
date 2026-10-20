@@ -1,5 +1,3 @@
-﻿
-
 namespace Movies.Application.DTOs.MovieAdmin
 {
     public class UpdateMovieAdminDto
@@ -14,6 +12,7 @@ namespace Movies.Application.DTOs.MovieAdmin
         public double? Rating { get; set; }
         public bool? IsActive { get; set; }
         public bool? IsTrending { get; set; }
+        public bool? IsHero { get; set; }
         public DateTime? InactiveAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 

@@ -1,4 +1,4 @@
-﻿namespace Movies.Application.DTOs.MovieAdmin
+namespace Movies.Application.DTOs.MovieAdmin
 {
     public class CreateMovieAdminDto
     {
@@ -10,6 +10,7 @@
         public string ThumbnailUrl { get; set; } = null!;
         public string BackdropUrl { get; set; } = null!;
         public string VideoUrl { get; set; } = null!;
+        public bool IsHero { get; set; } = false;
         public List<string> Cast { get; set; } = new List<string>();
         public List<string> Crew { get; set; } = new List<string>();
     }

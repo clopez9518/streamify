@@ -1,5 +1,3 @@
-﻿
-
 namespace Movies.Domain.Entities
 {
     public class Movie
@@ -23,6 +21,7 @@ namespace Movies.Domain.Entities
 
         public bool IsActive { get; set; } = true;
         public bool IsTrending { get; set; } = false;
+        public bool IsHero { get; set; } = false;
         public DateTime? InactiveAt { get; set; }
 
         public DateTime CreatedAt { get; set; }

@@ -1,5 +1,3 @@
-﻿
-
 using Movies.Application.DTOs.Genre;
 
 namespace Movies.Application.DTOs.Movie
@@ -16,11 +14,11 @@ namespace Movies.Application.DTOs.Movie
         public string VideoUrl { get; set; } = null!;
         public double Rating { get; set; }
         public bool IsTrending { get; set; }
+        public bool IsHero { get; set; }
         public bool IsInMyList { get; set; }
 
         public List<GenreDto> Genres { get; set; } = new();
         public List<string> Cast { get; set; } = new();
         public List<string> Crew { get; set; } = new();
-
     }
 }

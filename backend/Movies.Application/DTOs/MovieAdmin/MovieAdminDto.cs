@@ -1,4 +1,4 @@
-﻿using Movies.Application.DTOs.Genre;
+using Movies.Application.DTOs.Genre;
 
 namespace Movies.Application.DTOs.MovieAdmin
 {
@@ -15,6 +15,7 @@ namespace Movies.Application.DTOs.MovieAdmin
         public double Rating { get; set; }
         public bool IsActive { get; set; }
         public bool IsTrending { get; set; }
+        public bool IsHero { get; set; }
         public DateTime? InactiveAt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -22,6 +23,5 @@ namespace Movies.Application.DTOs.MovieAdmin
         public List<GenreDto> Genres { get; set; } = new();
         public List<string> Cast { get; set; } = new();
         public List<string> Crew { get; set; } = new();
-
     }
 }

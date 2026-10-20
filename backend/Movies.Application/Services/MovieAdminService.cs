@@ -1,11 +1,11 @@
-﻿using AutoMapper;
+using AutoMapper;
+using Microsoft.Extensions.Caching.Memory;
 using Movies.Application.DTOs.MovieAdmin;
 using Movies.Application.DTOs.TMDb;
 using Movies.Application.Exceptions;
 using Movies.Application.Extensions;
 using Movies.Application.Interfaces;
 using Movies.Domain.Entities;
-
 
 namespace Movies.Application.Services
 {
@@ -14,16 +14,25 @@ namespace Movies.Application.Services
         private readonly IMovieRepository _movieRepository;
         private readonly IMapper _mapper;
         private readonly ITmdbService _tmdbService;
+        private readonly IMemoryCache _cache;
+
         public MovieAdminService(
             IMovieRepository movieRepository,
             IMapper mapper,
-            ITmdbService tmdbService
+            ITmdbService tmdbService,
+            IMemoryCache cache
             )
         {
             _movieRepository = movieRepository;
             _mapper = mapper;
             _tmdbService = tmdbService;
- 
+            _cache = cache;
+        }
+
+        private void InvalidateHeroCache()
+        {
+            _cache.Remove("hero_movie_0_False");
+            _cache.Remove("hero_movie_0_True");
         }
 
         public async Task<IEnumerable<MovieAdminDto>> GetAll()
@@ -48,7 +57,11 @@ namespace Movies.Application.Services
             await _movieRepository.AddAsync(movie);
             await _movieRepository.SaveChangesAsync();
 
-            //await _movieRepository.LoadGenre(movie);
+            if (createMovieDto.IsHero)
+            {
+                await _movieRepository.SetHeroMovieAsync(movie.Id);
+                InvalidateHeroCache();
+            }
 
             return _mapper.Map<MovieAdminDto>(movie);
         }
@@ -58,14 +71,35 @@ namespace Movies.Application.Services
             var movie = await _movieRepository.GetByIdAsync(id) ?? 
                 throw new NotFoundException("Movie not found", "MOVIE_NOT_FOUND");
 
+            if (updateMovieDto.IsHero == true)
+            {
+                var updatedMovie = await _movieRepository.SetHeroMovieAsync(id);
+                if (updatedMovie != null) movie = updatedMovie;
+                InvalidateHeroCache();
+            }
+
             MovieExtensions.ApplyPatch(movie, updateMovieDto);
             movie.UpdatedAt = DateTime.UtcNow;
 
             await _movieRepository.SaveChangesAsync();
 
+            if (updateMovieDto.IsHero.HasValue)
+            {
+                InvalidateHeroCache();
+            }
+
             var movieDto = _mapper.Map<MovieAdminDto>(movie);
             return movieDto;
+        }
 
+        public async Task<MovieAdminDto?> SetHeroMovie(int movieId)
+        {
+            var movie = await _movieRepository.SetHeroMovieAsync(movieId);
+            if (movie == null) return null;
+
+            InvalidateHeroCache();
+
+            return _mapper.Map<MovieAdminDto>(movie);
         }
 
         public async Task<MovieAdminDto> UpdateMovieGenres(int movieId, List<int> genreIds)
@@ -73,10 +107,7 @@ namespace Movies.Application.Services
             var movie = await _movieRepository.GetByIdAsync(movieId) ??
                 throw new NotFoundException("Movie not found", "MOVIE_NOT_FOUND");
 
-
-            //Update MovieGenres
             _movieRepository.UpdateMovieGenres(movie, genreIds);
-
             movie.UpdatedAt = DateTime.UtcNow;
 
             await _movieRepository.SaveChangesAsync();
@@ -85,7 +116,6 @@ namespace Movies.Application.Services
 
             var movieDto = _mapper.Map<MovieAdminDto>(movie);
             return movieDto;
-
         }
 
         public async Task<IEnumerable<TmdbMovieDto>> GetTmdbMoviesBySearch(string search)

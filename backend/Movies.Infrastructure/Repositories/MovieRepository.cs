@@ -147,12 +147,33 @@ namespace Movies.Infrastructure.Repositories
             }
 
             var hero = await query
-                .OrderByDescending(m => m.IsTrending)
+                .OrderByDescending(m => m.IsHero)
+                .ThenByDescending(m => m.IsTrending)
                 .ThenByDescending(m => m.Rating)
                 .ThenByDescending(m => m.CreatedAt)
                 .FirstOrDefaultAsync();
 
             return hero;
+        }
+
+        public async Task<Movie?> SetHeroMovieAsync(int movieId)
+        {
+            var targetMovie = await _context.Movies
+                .Include(m => m.MovieGenres)
+                    .ThenInclude(mg => mg.Genre)
+                .FirstOrDefaultAsync(m => m.Id == movieId);
+
+            if (targetMovie == null) return null;
+
+            // Remove hero status from any other movie
+            await _context.Movies
+                .Where(m => m.IsHero && m.Id != movieId)
+                .ExecuteUpdateAsync(s => s.SetProperty(m => m.IsHero, false));
+
+            targetMovie.IsHero = true;
+            await _context.SaveChangesAsync();
+
+            return targetMovie;
         }
 
         public async Task<int> TotalMoviesCountAsync(bool isKids = false)

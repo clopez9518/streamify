@@ -1,4 +1,4 @@
-﻿using Movies.Application.DTOs.Movie;
+using Movies.Application.DTOs.Movie;
 using Movies.Application.DTOs.MovieAdmin;
 using Movies.Application.DTOs.TMDb;
 
@@ -11,6 +11,7 @@ namespace Movies.Application.Interfaces
         Task<MovieAdminDto> Create(CreateMovieAdminDto createMovieDto);
         Task<MovieAdminDto> Update(int id, UpdateMovieAdminDto updateMovieDto);
         Task<MovieAdminDto> UpdateMovieGenres(int movieId, List<int> genreIds);
+        Task<MovieAdminDto?> SetHeroMovie(int movieId);
         Task<IEnumerable<TmdbMovieDto>> GetTmdbMoviesBySearch(string search);
         Task<TmdbMovieResponseDto> GetTmdbMovieById(int movieId);
     }

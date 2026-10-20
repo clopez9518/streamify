@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Movies.Application.DTOs.Movie;
@@ -12,8 +12,7 @@ namespace Movies.Api.Controllers
     [ApiController]
     public class MoviesAdminController : ControllerBase
     {
-
-        private IMovieAdminService _movieAdminService;
+        private readonly IMovieAdminService _movieAdminService;
 
         public MoviesAdminController(IMovieAdminService movieService)
         {
@@ -21,7 +20,8 @@ namespace Movies.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get() {
+        public async Task<IActionResult> Get()
+        {
             var movieDto = await _movieAdminService.GetAll();
             return movieDto == null ? NotFound() : Ok(movieDto);
         }
@@ -33,11 +33,9 @@ namespace Movies.Api.Controllers
             return movieDto == null ? NotFound() : Ok(movieDto);
         }
 
-
         [HttpPost]
         public async Task<ActionResult<MovieAdminDto>> PostMovie(CreateMovieAdminDto createMovieDto)
         {
-            //Add validators
             var movieDto = await _movieAdminService.Create(createMovieDto);
             return movieDto == null ? NotFound() : Ok(movieDto);
         }
@@ -45,7 +43,6 @@ namespace Movies.Api.Controllers
         [HttpPatch("{id}")]
         public async Task<ActionResult<MovieAdminDto>> PatchMovie(int id, UpdateMovieAdminDto updateMovieDto)
         {
-            //Add validators
             var movieDto = await _movieAdminService.Update(id, updateMovieDto);
             return movieDto == null ? NotFound() : Ok(movieDto);
         }
@@ -53,9 +50,15 @@ namespace Movies.Api.Controllers
         [HttpPut("genres/{id}")]
         public async Task<ActionResult<MovieAdminDto>> PutMovieGenres(int id, UpdateMovieGenresDto dto)
         {
-            //Add validators
             var movieDto = await _movieAdminService.UpdateMovieGenres(id, dto.GenreIds);
             return movieDto == null ? NotFound() : Ok(movieDto);
+        }
+
+        [HttpPut("{id}/hero")]
+        public async Task<ActionResult<MovieAdminDto>> SetHeroMovie(int id)
+        {
+            var movie = await _movieAdminService.SetHeroMovie(id);
+            return movie == null ? NotFound() : Ok(movie);
         }
 
         [HttpGet("tmdb")]
@@ -71,6 +74,5 @@ namespace Movies.Api.Controllers
             var movie = await _movieAdminService.GetTmdbMovieById(id);
             return movie == null ? NotFound() : Ok(movie);
         }
-
     }
 }

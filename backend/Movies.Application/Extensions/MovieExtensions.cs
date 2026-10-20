@@ -1,5 +1,3 @@
-﻿
-
 using Movies.Application.DTOs.MovieAdmin;
 using Movies.Domain.Entities;
 
@@ -7,7 +5,6 @@ namespace Movies.Application.Extensions
 {
     public static class MovieExtensions
     {
-
         public static void ApplyPatch(this Movie movie, UpdateMovieAdminDto dto)
         {
             movie.Title = dto.Title ?? movie.Title;
@@ -22,6 +19,10 @@ namespace Movies.Application.Extensions
             movie.Cast = dto.Cast ?? movie.Cast;
             movie.Crew = dto.Crew ?? movie.Crew;
 
+            if (dto.IsHero.HasValue)
+            {
+                movie.IsHero = dto.IsHero.Value;
+            }
 
             if (dto.IsActive.HasValue)
             {
@@ -43,6 +44,5 @@ namespace Movies.Application.Extensions
             var size = $"w{width}";
             return $"{baseUrl}{size}{path}";
         } 
-
     }
 }

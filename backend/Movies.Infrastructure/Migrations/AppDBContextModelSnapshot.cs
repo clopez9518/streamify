@@ -94,6 +94,9 @@ namespace Movies.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsHero")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsTrending")
                         .HasColumnType("boolean");
 

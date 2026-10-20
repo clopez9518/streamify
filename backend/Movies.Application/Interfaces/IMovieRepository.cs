@@ -15,6 +15,7 @@ namespace Movies.Application.Interfaces
         Task<IEnumerable<Movie>> GetMoviesSortAsync(string sortBy = "recent", int limit = 15, bool isKids = false);
         Task<IEnumerable<Movie>> SearchAsync(string query, int limit = 20, bool isKids = false);
         Task<Movie?> GetHeroMovieAsync(int? genreId = null, bool isKids = false);
+        Task<Movie?> SetHeroMovieAsync(int movieId);
         void UpdateMovieGenres(Movie movie, List<int> genreIds);
         Task<int> TotalMoviesCountAsync(bool isKids = false);
 
